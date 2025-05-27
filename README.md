@@ -12,7 +12,7 @@ reward-calculator
 
 ## Features
  
-- Accepts customer_id.
+- Accepts customer_id {cId}
 - Filters transactions from the past 3 months.
 - Calculates reward points using a tiered formula:
   - 2 points for every dollar spent over $100
@@ -54,7 +54,7 @@ Fallback method when cId is null or empty.
 1. Clone the repository:
  
 ```bash
-git clone https://github.com/your-repo/reward-points-api.git
+git clone https://github.com/your-repo/reward-calculator.git
 cd reward-calculator
 ```
  
