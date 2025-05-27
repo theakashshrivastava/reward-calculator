@@ -23,10 +23,6 @@ public class RewardService {
     public List<RewardResponse> calculateRewards(String customerId) {
         List<Customer_Transaction> transactions = transactionRepository.findByCustomerId(customerId);
 
-        if (transactions == null || transactions.isEmpty()) {
-            throw new NoCustomerFoundException("No transactions found for customerId: " + customerId);
-        }
-
         Map<String, Map<String, Integer>> customerMonthlyPoints = new HashMap<>();
         LocalDate threeMonthAgo = LocalDate.now().minusMonths(monthsToSubtract);
 
@@ -42,18 +38,19 @@ public class RewardService {
                     .computeIfAbsent(customerId, k -> new HashMap<>())
                     .merge(month, points, Integer::sum);
         }
+        if (customerMonthlyPoints.isEmpty()) {
+            throw new NoCustomerFoundException("No transactions with in 3 months were found for customerId: " + customerId);
+        } else {
+            List<RewardResponse> rewardResponses = new ArrayList<>();
+            for (Map.Entry<String, Map<String, Integer>> entry : customerMonthlyPoints.entrySet()) {
+                String cid = entry.getKey();
+                Map<String, Integer> monthlyPoints = entry.getValue();
+                int totalPoints = monthlyPoints.values().stream().mapToInt(Integer::intValue).sum();
 
-        List<RewardResponse> rewardResponses = new ArrayList<>();
-        for (Map.Entry<String, Map<String, Integer>> entry : customerMonthlyPoints.entrySet()) {
-            String cid = entry.getKey();
-            Map<String, Integer> monthlyPoints = entry.getValue();
-            int totalPoints = monthlyPoints.values().stream().mapToInt(Integer::intValue).sum();
-
-            rewardResponses.add(new RewardResponse(cid, monthlyPoints, totalPoints));
+                rewardResponses.add(new RewardResponse(cid, monthlyPoints, totalPoints));
+            }
+            return rewardResponses;
         }
-
-        rewardResponses.sort(Comparator.comparing(RewardResponse::getCustomerId));
-        return rewardResponses;
     }
     private int calculatePoints(double amount) {
         int points = 0;
