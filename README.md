@@ -55,7 +55,7 @@ Fallback method when cId is null or empty.
  
 ```bash
 git clone https://github.com/your-repo/reward-points-api.git
-cd reward-points-api
+cd reward-calculator
 ```
  
 2. Build and run:
