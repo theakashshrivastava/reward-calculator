@@ -1,5 +1,6 @@
 package com.rewards.reward_calculator.service;
 
+import com.rewards.reward_calculator.exception.NoCustomerFoundException;
 import com.rewards.reward_calculator.model.Customer_Transaction;
 import com.rewards.reward_calculator.model.RewardResponse;
 import com.rewards.reward_calculator.repository.TransactionRepository;
@@ -8,12 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,11 +64,13 @@ public class RewardServiceTest {
     @Test
     void transactionsOlderThanThreeMonths() {
         Customer_Transaction oldTransaction =
-                new Customer_Transaction("CUST001", 225.0, LocalDate.of(2024,12,22));
+                new Customer_Transaction("CUST006",
+                        225.0,
+                        LocalDate.of(2024,12,22));
         when(transactionRepository.findByCustomerId(oldTransaction.getCustomerId()))
                 .thenReturn(List.of(oldTransaction));
 
-        List<RewardResponse> responses = rewardService.calculateRewards("CUST001");
+        List<RewardResponse> responses = rewardService.calculateRewards("CUST006");
         assertEquals(0, responses.size());
     }
 

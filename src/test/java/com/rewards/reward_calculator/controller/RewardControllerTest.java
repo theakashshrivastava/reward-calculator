@@ -1,7 +1,9 @@
 package com.rewards.reward_calculator.controller;
 
 import com.rewards.reward_calculator.exception.NoCustomerFoundException;
+import com.rewards.reward_calculator.model.Customer_Transaction;
 import com.rewards.reward_calculator.model.RewardResponse;
+import com.rewards.reward_calculator.repository.TransactionRepository;
 import com.rewards.reward_calculator.service.RewardService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class RewardControllerTest {
 
     @MockitoBean
     private RewardService rewardService;
+
+    @MockitoBean
+    private TransactionRepository transactionRepository;
 
     @Test
     public void testCalculateRewardsForValidCustomer() throws Exception {
@@ -69,4 +74,20 @@ public class RewardControllerTest {
                 .andExpect(result ->
                         assertInstanceOf(NoCustomerFoundException.class, result.getResolvedException()));
     }
+
+
+    @Test
+    public void transactionsOlderThanThreeMonths() throws Exception {
+     Customer_Transaction oldTransaction =
+     new Customer_Transaction("CUST006", 225.0,
+             LocalDate.of(2024, 12, 22));
+            when(transactionRepository.findByCustomerId("CUST006"))
+                    .thenReturn(List.of(oldTransaction));
+        when(rewardService.customerExists(oldTransaction.getCustomerId())).thenReturn(true);
+        when(rewardService.calculateRewards(oldTransaction.getCustomerId())).thenReturn(List.of());
+
+     mockMvc.perform(get("/api/rewards/calculate/CUST006"))
+     .andExpect(status().isOk())
+     .andExpect(jsonPath("$.length()").value(0));
+        }
 }

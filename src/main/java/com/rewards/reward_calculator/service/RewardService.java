@@ -1,9 +1,10 @@
 package com.rewards.reward_calculator.service;
 
-import com.rewards.reward_calculator.exception.NoCustomerFoundException;
 import com.rewards.reward_calculator.model.Customer_Transaction;
 import com.rewards.reward_calculator.model.RewardResponse;
 import com.rewards.reward_calculator.repository.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class RewardService {
         this.transactionRepository = transactionRepository;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(RewardService.class);
     private static final int monthsToSubtract = 3;
 
     public List<RewardResponse> calculateRewards(String customerId) {
@@ -38,9 +40,12 @@ public class RewardService {
                     .computeIfAbsent(customerId, k -> new HashMap<>())
                     .merge(month, points, Integer::sum);
         }
+
         if (customerMonthlyPoints.isEmpty()) {
-            throw new NoCustomerFoundException("No transactions with in 3 months were found for customerId: " + customerId);
-        } else {
+            logger.warn("No transactions were made in the last 3 months for customerId: {}", customerId);
+            return Collections.emptyList();
+        }
+        else {
             List<RewardResponse> rewardResponses = new ArrayList<>();
             for (Map.Entry<String, Map<String, Integer>> entry : customerMonthlyPoints.entrySet()) {
                 String cid = entry.getKey();
@@ -52,6 +57,7 @@ public class RewardService {
             return rewardResponses;
         }
     }
+
     private int calculatePoints(double amount) {
         int points = 0;
         if (amount > 100) {
