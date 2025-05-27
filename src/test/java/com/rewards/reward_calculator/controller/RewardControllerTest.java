@@ -75,7 +75,6 @@ public class RewardControllerTest {
                         assertInstanceOf(NoCustomerFoundException.class, result.getResolvedException()));
     }
 
-
     @Test
     public void transactionsOlderThanThreeMonths() throws Exception {
      Customer_Transaction oldTransaction =

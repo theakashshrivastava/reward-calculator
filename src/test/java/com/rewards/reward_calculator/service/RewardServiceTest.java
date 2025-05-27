@@ -1,6 +1,5 @@
 package com.rewards.reward_calculator.service;
 
-import com.rewards.reward_calculator.exception.NoCustomerFoundException;
 import com.rewards.reward_calculator.model.Customer_Transaction;
 import com.rewards.reward_calculator.model.RewardResponse;
 import com.rewards.reward_calculator.repository.TransactionRepository;
