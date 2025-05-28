@@ -1,7 +1,7 @@
 package com.rewards.reward_calculator.controller;
 
 import com.rewards.reward_calculator.exception.NoCustomerFoundException;
-import com.rewards.reward_calculator.model.Customer_Transaction;
+import com.rewards.reward_calculator.model.CustomerTransaction;
 import com.rewards.reward_calculator.model.RewardResponse;
 import com.rewards.reward_calculator.repository.TransactionRepository;
 import com.rewards.reward_calculator.service.RewardService;
@@ -77,8 +77,8 @@ public class RewardControllerTest {
 
     @Test
     public void transactionsOlderThanThreeMonths() throws Exception {
-     Customer_Transaction oldTransaction =
-     new Customer_Transaction("CUST006", 225.0,
+     CustomerTransaction oldTransaction =
+     new CustomerTransaction("CUST006", 225.0,
              LocalDate.of(2024, 12, 22));
             when(transactionRepository.findByCustomerId("CUST006"))
                     .thenReturn(List.of(oldTransaction));

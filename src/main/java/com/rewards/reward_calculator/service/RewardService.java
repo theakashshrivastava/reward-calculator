@@ -1,6 +1,6 @@
 package com.rewards.reward_calculator.service;
 
-import com.rewards.reward_calculator.model.Customer_Transaction;
+import com.rewards.reward_calculator.model.CustomerTransaction;
 import com.rewards.reward_calculator.model.RewardResponse;
 import com.rewards.reward_calculator.repository.TransactionRepository;
 import org.slf4j.Logger;
@@ -23,12 +23,12 @@ public class RewardService {
     private static final int monthsToSubtract = 3;
 
     public List<RewardResponse> calculateRewards(String customerId) {
-        List<Customer_Transaction> transactions = transactionRepository.findByCustomerId(customerId);
+        List<CustomerTransaction> transactions = transactionRepository.findByCustomerId(customerId);
 
         Map<String, Map<String, Integer>> customerMonthlyPoints = new HashMap<>();
         LocalDate threeMonthAgo = LocalDate.now().minusMonths(monthsToSubtract);
 
-        for (Customer_Transaction transaction : transactions) {
+        for (CustomerTransaction transaction : transactions) {
             if (transaction.getTransactionDate().isBefore(threeMonthAgo)) {
                 continue;
             }
@@ -44,8 +44,7 @@ public class RewardService {
         if (customerMonthlyPoints.isEmpty()) {
             logger.warn("No transactions were made in the last 3 months for customerId: {}", customerId);
             return Collections.emptyList();
-        }
-        else {
+        } else {
             List<RewardResponse> rewardResponses = new ArrayList<>();
             for (Map.Entry<String, Map<String, Integer>> entry : customerMonthlyPoints.entrySet()) {
                 String cid = entry.getKey();
@@ -70,7 +69,7 @@ public class RewardService {
     }
 
     public boolean customerExists(String cId) {
-        List<Customer_Transaction>  transactions = transactionRepository.findByCustomerId(cId);
+        List<CustomerTransaction>  transactions = transactionRepository.findByCustomerId(cId);
         return transactions != null && !transactions.isEmpty();
     }
 }

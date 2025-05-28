@@ -1,6 +1,6 @@
 package com.rewards.reward_calculator.service;
 
-import com.rewards.reward_calculator.model.Customer_Transaction;
+import com.rewards.reward_calculator.model.CustomerTransaction;
 import com.rewards.reward_calculator.model.RewardResponse;
 import com.rewards.reward_calculator.repository.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,10 +35,10 @@ public class RewardServiceTest {
 
     @Test
     void transactionsWithinThreeMonths() {
-        Customer_Transaction recentTransaction1 =
-                new Customer_Transaction("CUST001", 120.0, LocalDate.of(2025,04,10));
-        Customer_Transaction recentTransaction2 =
-                new Customer_Transaction("CUST001", 120.0, LocalDate.of(2025,05,15));
+        CustomerTransaction recentTransaction1 =
+                new CustomerTransaction("CUST001", 120.0, LocalDate.of(2025,04,10));
+        CustomerTransaction recentTransaction2 =
+                new CustomerTransaction("CUST001", 120.0, LocalDate.of(2025,05,15));
         when(transactionRepository.findByCustomerId("CUST001"))
                 .thenReturn(List.of(recentTransaction1, recentTransaction2));
 
@@ -62,8 +62,8 @@ public class RewardServiceTest {
 
     @Test
     void transactionsOlderThanThreeMonths() {
-        Customer_Transaction oldTransaction =
-                new Customer_Transaction("CUST006",
+        CustomerTransaction oldTransaction =
+                new CustomerTransaction("CUST006",
                         225.0,
                         LocalDate.of(2024,12,22));
         when(transactionRepository.findByCustomerId(oldTransaction.getCustomerId()))
@@ -76,8 +76,8 @@ public class RewardServiceTest {
     @Test
     public void whenCustomerExists(){
         String cId = "CUST005";
-        List<Customer_Transaction> transactions =
-                List.of(new Customer_Transaction(cId,120.0,LocalDate.now().minusDays(30)));
+        List<CustomerTransaction> transactions =
+                List.of(new CustomerTransaction(cId,120.0,LocalDate.now().minusDays(30)));
         when(transactionRepository.findByCustomerId(cId)).thenReturn(transactions);
         assertTrue(rewardService.customerExists(cId));
     }
