@@ -6,9 +6,11 @@ This Spring Boot application calculates reward points for customers based on the
 
 # Project Structure
 
+<img width="269" alt="final" src="https://github.com/user-attachments/assets/3b03cbc5-fdd8-4f7a-9c47-92bc82f17cdd" />
+
 reward-calculator
 
- <img width="365" alt="root" src="https://github.com/user-attachments/assets/cb435bac-7f1d-416c-af32-c46a261632af" />
+
 
 ## Features
  
